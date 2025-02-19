@@ -83,7 +83,7 @@ public class UsuarioController {
 			Usuarios nuevoUsuario = usuarioService.createUsuario(usuario);
 			SesionDto sesion = new SesionDto(nuevoUsuario.getId(), nuevoUsuario.getMailUsuario(),
 					nuevoUsuario.getRolUsuario());
-			return ResponseEntity.ok(sesion);
+			return ResponseEntity.ok(nuevoUsuario);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
