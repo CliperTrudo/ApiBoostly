@@ -5,16 +5,20 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "usuarios") // El nombre coincide con el de la tabla en la base de datos
+@Table(name = "usuarios")
 public class Usuarios {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Usa AUTO_INCREMENT de MySQL
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private Long id;
 
     @Column(name = "nombre_usuario", length = 255, nullable = false)
     private String nombreUsuario;
+
+    @ManyToOne
+    @JoinColumn(name = "rol_id_rol", nullable = false)
+    private Roles rol;  // Relación con la clase 'Roles'
 
     @Column(name = "apellidos_usuarios", length = 255, nullable = false)
     private String apellidosUsuario;
@@ -47,9 +51,6 @@ public class Usuarios {
     @Column(name = "img_usuario")
     private byte[] imgUsuario;
 
-    @Column(name = "rol_usuario", length = 255)
-    private String rolUsuario = "Usuario";
-
     @Column(name = "google_usuario")
     private Boolean googleUsuario;
 
@@ -63,11 +64,12 @@ public class Usuarios {
     public Usuarios() {}
 
     // Constructor con parámetros
-    public Usuarios(String nombreUsuario, String apellidosUsuario, String mailUsuario, Date fechaNacimientoUsuario,
-                    String nicknameUsuario, String contrasenyaUsuario, Date fechaAltaUsuario, String descripcionUsuario,
-                    String dniUsuario, String telefonoUsuario, byte[] imgUsuario, String rolUsuario, Boolean googleUsuario,
-                    String tokenRecuperacion, Timestamp tokenExpiracion) {
+    public Usuarios(String nombreUsuario, Roles rol, String apellidosUsuario, String mailUsuario,
+                    Date fechaNacimientoUsuario, String nicknameUsuario, String contrasenyaUsuario,
+                    Date fechaAltaUsuario, String descripcionUsuario, String dniUsuario, String telefonoUsuario,
+                    byte[] imgUsuario, Boolean googleUsuario, String tokenRecuperacion, Timestamp tokenExpiracion) {
         this.nombreUsuario = nombreUsuario;
+        this.rol = rol;
         this.apellidosUsuario = apellidosUsuario;
         this.mailUsuario = mailUsuario;
         this.fechaNacimientoUsuario = fechaNacimientoUsuario;
@@ -78,7 +80,6 @@ public class Usuarios {
         this.dniUsuario = dniUsuario;
         this.telefonoUsuario = telefonoUsuario;
         this.imgUsuario = imgUsuario;
-        this.rolUsuario = rolUsuario;
         this.googleUsuario = googleUsuario;
         this.tokenRecuperacion = tokenRecuperacion;
         this.tokenExpiracion = tokenExpiracion;
@@ -99,6 +100,14 @@ public class Usuarios {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
+    }
+
+    public Roles getRol() {
+        return rol;
+    }
+
+    public void setRol(Roles rol) {
+        this.rol = rol;
     }
 
     public String getApellidosUsuario() {
@@ -181,14 +190,6 @@ public class Usuarios {
         this.imgUsuario = imgUsuario;
     }
 
-    public String getRolUsuario() {
-        return rolUsuario;
-    }
-
-    public void setRolUsuario(String rolUsuario) {
-        this.rolUsuario = rolUsuario;
-    }
-
     public Boolean getGoogleUsuario() {
         return googleUsuario;
     }
@@ -218,6 +219,7 @@ public class Usuarios {
         return "Usuarios{" +
                 "id=" + id +
                 ", nombreUsuario='" + nombreUsuario + '\'' +
+                ", rol=" + rol +
                 ", apellidosUsuario='" + apellidosUsuario + '\'' +
                 ", mailUsuario='" + mailUsuario + '\'' +
                 ", fechaNacimientoUsuario=" + fechaNacimientoUsuario +
@@ -227,7 +229,6 @@ public class Usuarios {
                 ", descripcionUsuario='" + descripcionUsuario + '\'' +
                 ", dniUsuario='" + dniUsuario + '\'' +
                 ", telefonoUsuario='" + telefonoUsuario + '\'' +
-                ", rolUsuario='" + rolUsuario + '\'' +
                 ", googleUsuario=" + googleUsuario +
                 ", tokenRecuperacion='" + tokenRecuperacion + '\'' +
                 ", tokenExpiracion=" + tokenExpiracion +

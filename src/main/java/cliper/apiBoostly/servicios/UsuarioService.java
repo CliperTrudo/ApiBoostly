@@ -57,7 +57,7 @@ public class UsuarioService {
         usuario.setDniUsuario(usuarioDetails.getDniUsuario());
         usuario.setTelefonoUsuario(usuarioDetails.getTelefonoUsuario());
         usuario.setImgUsuario(usuarioDetails.getImgUsuario());
-        usuario.setRolUsuario(usuarioDetails.getRolUsuario());
+        usuario.setRol(usuarioDetails.getRol());
         return usuarioRepository.save(usuario);
     }
     
@@ -133,4 +133,5 @@ public class UsuarioService {
         
         return false;
     }
+    
 }
