@@ -33,6 +33,11 @@ public class UsuarioService {
         return usuario.orElse(null);
     }
     
+    public Usuarios getUsuarioById(Long id) {
+        Optional<Usuarios> usuario = usuarioRepository.findById(id);
+        return usuario.orElse(null); // Devuelve el usuario si existe, o null si no se encuentra
+    }
+    
     public Usuarios loginUsuarioGoogle(String mail) {
         Optional<Usuarios> usuario = usuarioRepository.findByGoogleUsuarioTrueAndMailUsuario(mail);
         return usuario.orElse(null);
