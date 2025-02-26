@@ -1,25 +1,26 @@
 package cliper.apiBoostly.controladores;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import cliper.apiBoostly.daos.MailDto;
 import cliper.apiBoostly.daos.Roles;
 import cliper.apiBoostly.daos.Usuarios;
-
-import cliper.apiBoostly.dtos.SesionDto;
 import cliper.apiBoostly.dtos.TokenContraseñaDto;
 import cliper.apiBoostly.dtos.UsuariosDto;
-
-import cliper.apiBoostly.servicios.UsuarioService;
 import cliper.apiBoostly.servicios.RolesService;
+import cliper.apiBoostly.servicios.UsuarioService;
 import cliper.apiBoostly.servicios.UsuarioToken;
-
-import java.util.Base64;
-import java.sql.Timestamp;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -42,15 +43,48 @@ public class UsuarioController {
         return usuarioService.getAllUsuarios();
     }
 
+    // Método para hacer login con el mail
     @CrossOrigin(origins = "http://127.0.0.1:5500")
     @PostMapping("/login")
     public ResponseEntity<?> loginUsuario(@RequestBody MailDto loginRequest) {
+        // Busca el usuario por mail
         Usuarios usuario = usuarioService.loginUsuario(loginRequest.getMail());
+
         if (usuario != null) {
-            return ResponseEntity.ok(usuario);
+            // Convertir el objeto Usuarios a UsuarioDto
+            UsuariosDto usuarioDto = convertirAUsuarioDto(usuario);
+            return ResponseEntity.ok(usuarioDto); // Devuelve el UsuarioDto
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
         }
+    }
+
+    // Método para convertir Usuarios a UsuarioDto
+    private UsuariosDto convertirAUsuarioDto(Usuarios usuario) {
+        UsuariosDto usuarioDto = new UsuariosDto();
+        usuarioDto.setId(usuario.getId());
+        usuarioDto.setNombreUsuario(usuario.getNombreUsuario());
+        usuarioDto.setApellidosUsuario(usuario.getApellidosUsuario());
+        usuarioDto.setMailUsuario(usuario.getMailUsuario());
+        usuarioDto.setFechaNacimientoUsuario(usuario.getFechaNacimientoUsuario());
+        usuarioDto.setNicknameUsuario(usuario.getNicknameUsuario());
+        usuarioDto.setContrasenyaUsuario(usuario.getContrasenyaUsuario());
+        usuarioDto.setFechaAltaUsuario(usuario.getFechaAltaUsuario());
+        usuarioDto.setDescripcionUsuario(usuario.getDescripcionUsuario());
+        usuarioDto.setDniUsuario(usuario.getDniUsuario());
+        usuarioDto.setTelefonoUsuario(usuario.getTelefonoUsuario());
+        usuarioDto.setImgUsuario(usuario.getImgUsuario()); // Recibe la imagen como byte[]
+
+        // Asignar rol (asumiendo que tienes un campo rol en UsuarioDto)
+        if (usuario.getRol() != null) {
+            usuarioDto.setRol(usuario.getRol().getIdRol()); // Asumimos que se quiere el ID del rol
+        }
+
+        usuarioDto.setGoogleUsuario(usuario.getGoogleUsuario());
+        usuarioDto.setTokenRecuperacion(usuario.getTokenRecuperacion());
+        usuarioDto.setTokenExpiracion(usuario.getTokenExpiracion());
+
+        return usuarioDto;
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:5500")
@@ -73,19 +107,10 @@ public class UsuarioController {
             nuevoUsuario.setDniUsuario(usuarioDto.getDniUsuario());
             nuevoUsuario.setTelefonoUsuario(usuarioDto.getTelefonoUsuario());
 
-            // Limpiar y convertir la imagen de Base64 a byte[]
+            // La imagen ya se recibe directamente como byte[]
             if (usuarioDto.getImgUsuario() != null) {
-                String base64Image = usuarioDto.getImgUsuario();
-                // Eliminar la cabecera si existe
-                if (base64Image.startsWith("data:image")) {
-                    base64Image = base64Image.split(",")[1];  // Eliminar "data:image/png;base64,"
-                }
-                try {
-                    byte[] imgBytes = Base64.getDecoder().decode(base64Image); // Convertir de Base64 a byte[]
-                    nuevoUsuario.setImgUsuario(imgBytes); // Establecer los datos binarios de la imagen
-                } catch (IllegalArgumentException e) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Imagen en Base64 no válida");
-                }
+                byte[] imgBytes = usuarioDto.getImgUsuario(); // Recibimos la imagen como byte[]
+                nuevoUsuario.setImgUsuario(imgBytes); // Establecer los datos binarios de la imagen
             }
 
             nuevoUsuario.setGoogleUsuario(usuarioDto.getGoogleUsuario());
@@ -121,7 +146,8 @@ public class UsuarioController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody TokenContraseñaDto request) {
-        boolean actualizado = usuarioToken.actualizarContrasena(request.getTokenRecuperacion(), request.getNuevaContrasena());
+        boolean actualizado = usuarioToken.actualizarContrasena(request.getTokenRecuperacion(),
+                request.getNuevaContrasena());
         return actualizado ? ResponseEntity.ok("Contraseña actualizada correctamente")
                 : ResponseEntity.badRequest().body("Token inválido o expirado");
     }
