@@ -16,6 +16,9 @@ public class ProyectoService {
     @Autowired
     private ProyectoRepository proyectoRepository;
     
+    @Autowired
+    private CategoriaService categoriaService;
+    
     /**
      * Crea un nuevo proyecto a partir de un ProyectoDto.
      * Se asume que el campo idUsuario del DTO contiene el id del usuario logueado.
@@ -38,7 +41,7 @@ public class ProyectoService {
             dto.getFechaFinalizacionProyecto(),     // Validar que sea posterior a la fecha de inicio en el controlador o servicio
             dto.getMetaRecaudacionProyecto(),       // Debe ser un número positivo
             dto.getEstadoProyecto(),                // true = activo, false = inactivo/finalizado
-            dto.getCategoriaProyecto()
+            categoriaService.obtenerCategoriaPorId(dto.getIdCategoria())
         );
         return proyectoRepository.save(proyecto);
     }
@@ -79,9 +82,15 @@ public class ProyectoService {
         proyectoExistente.setFechaFinalizacionProyecto(dto.getFechaFinalizacionProyecto());
         proyectoExistente.setMetaRecaudacionProyecto(dto.getMetaRecaudacionProyecto());
         proyectoExistente.setEstadoProyecto(dto.getEstadoProyecto());
-        proyectoExistente.setCategoriaProyecto(dto.getCategoriaProyecto());
+        proyectoExistente.setCategoriaProyecto(categoriaService.obtenerCategoriaPorId(dto.getIdCategoria()));
         return proyectoRepository.save(proyectoExistente);
     }
+    
+    public List<Proyectos> obtenerProyectosPorCategoria(Long idCategoria) {
+        return proyectoRepository.findByIdCategoria(idCategoria);
+                
+    }
+
     
     /**
      * Elimina un proyecto por su ID.

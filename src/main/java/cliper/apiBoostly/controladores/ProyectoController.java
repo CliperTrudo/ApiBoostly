@@ -1,25 +1,22 @@
 package cliper.apiBoostly.controladores;
 
+import cliper.apiBoostly.daos.Categoria;
+import cliper.apiBoostly.daos.Proyectos;
+import cliper.apiBoostly.daos.Usuarios;
+import cliper.apiBoostly.dtos.ProyectoDto;
+import cliper.apiBoostly.dtos.CategoriaDto;
+import cliper.apiBoostly.servicios.ProyectoService;
+import cliper.apiBoostly.servicios.CategoriaService;
+import jakarta.servlet.http.HttpSession;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import cliper.apiBoostly.daos.Proyectos;
-import cliper.apiBoostly.daos.Usuarios;
-import cliper.apiBoostly.dtos.ProyectoDto; // Opcional: DTO para recibir datos del proyecto
-import cliper.apiBoostly.servicios.ProyectoService;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/proyectos")
@@ -28,82 +25,65 @@ public class ProyectoController {
     @Autowired
     private ProyectoService proyectoService;
 
+    @Autowired
+    private CategoriaService categoriaService;
+
     /**
      * Crea un nuevo proyecto. Se asigna automáticamente el usuario logueado y la fecha de inicio se establece en el momento de la creación.
      */
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDto proyectoDto) {
-        
-        // Asignar el usuario logueado y la fecha de inicio (ahora) al proyecto
+        // Asignar el usuario logueado y la fecha de inicio
+    	System.out.println(proyectoDto.toString());
         proyectoDto.setFechaInicioProyecto(LocalDateTime.now());
 
-        // Aquí se pueden agregar validaciones adicionales, como que fecha_finalizacion sea posterior a fecha_inicio, etc.
+        Categoria categiriaEncontradaCategoria = categoriaService.obtenerCategoriaPorId(proyectoDto.getIdCategoria());
+        CategoriaDto categoria = new CategoriaDto(categiriaEncontradaCategoria.getIdCategoria(),categiriaEncontradaCategoria.getNombreCategoria(),categiriaEncontradaCategoria.getDescripcionCategoria());
+        
+        if (categoria.getIdCategoria() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Categoría no válida");
+        }
+
+        // Llamar al servicio para crear el proyecto
         Proyectos proyectoCreado = proyectoService.crearProyecto(proyectoDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(proyectoCreado);
-    }
 
-    /**
-     * Lista todos los proyectos.
-     */
+        // Convertir la entidad Proyectos a ProyectoDto antes de devolverla
+        ProyectoDto proyectoDtoResponse = convertirAProyectoDto(proyectoCreado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(proyectoDtoResponse);
+    }
+    
     @GetMapping
-    public ResponseEntity<List<Proyectos>> listarProyectos() {
+    public ResponseEntity<List<ProyectoDto>> obtenerProyectos() {
         List<Proyectos> proyectos = proyectoService.listarProyectos();
-        return ResponseEntity.ok(proyectos);
+        List<ProyectoDto> proyectosDto = proyectos.stream().map(this::convertirAProyectoDto).collect(Collectors.toList());
+        return ResponseEntity.ok(proyectosDto);
+    }
+    
+    @GetMapping("/categoria/{idCategoria}")
+    public ResponseEntity<List<ProyectoDto>> obtenerProyectosPorCategoria(@PathVariable Long idCategoria) {
+        List<Proyectos> proyectos = proyectoService.obtenerProyectosPorCategoria(idCategoria);
+        List<ProyectoDto> proyectosDto = proyectos.stream()
+            .map(this::convertirAProyectoDto)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(proyectosDto);
     }
 
-    /**
-     * Obtiene los detalles de un proyecto por su ID.
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerProyecto(@PathVariable Long id) {
-        Proyectos proyecto = proyectoService.obtenerProyectoPorId(id);
-        if (proyecto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proyecto no encontrado");
-        }
-        return ResponseEntity.ok(proyecto);
-    }
 
-    /**
-     * Actualiza un proyecto. Solo el creador del proyecto puede editarlo.
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarProyecto(@PathVariable Long id, @RequestBody ProyectoDto proyectoDto, HttpSession session) {
-        Usuarios usuarioLogueado = (Usuarios) session.getAttribute("usuario");
-        if (usuarioLogueado == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
-        }
-        Proyectos proyectoExistente = proyectoService.obtenerProyectoPorId(id);
-        if (proyectoExistente == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proyecto no encontrado");
-        }
-        // Validar que el usuario logueado sea el creador del proyecto
-        if (!proyectoExistente.getUsuario().getId().equals(usuarioLogueado.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para editar este proyecto");
-        }
-        // Actualizar el proyecto con los nuevos datos (la lógica se implementa en el servicio)
-        Proyectos proyectoActualizado = proyectoService.actualizarProyecto(id, proyectoDto);
-        return ResponseEntity.ok(proyectoActualizado);
-    }
-
-    /**
-     * Elimina un proyecto. Solo el creador del proyecto puede eliminarlo.
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarProyecto(@PathVariable Long id, HttpSession session) {
-        Usuarios usuarioLogueado = (Usuarios) session.getAttribute("usuario");
-        if (usuarioLogueado == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no autenticado");
-        }
-        Proyectos proyectoExistente = proyectoService.obtenerProyectoPorId(id);
-        if (proyectoExistente == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proyecto no encontrado");
-        }
-        // Validar que el usuario logueado sea el creador del proyecto
-        if (!proyectoExistente.getUsuario().getId().equals(usuarioLogueado.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permiso para eliminar este proyecto");
-        }
-        proyectoService.eliminarProyecto(id);
-        return ResponseEntity.ok("Proyecto eliminado");
+    // Método para convertir la entidad Proyectos a ProyectoDto
+    private ProyectoDto convertirAProyectoDto(Proyectos proyecto) {
+        ProyectoDto proyectoDto = new ProyectoDto();
+        proyectoDto.setIdProyecto(proyecto.getIdProyecto());
+        proyectoDto.setIdUsuario(proyecto.getUsuario().getId());
+        proyectoDto.setNombreProyecto(proyecto.getNombreProyecto());
+        proyectoDto.setDescripcionProyecto(proyecto.getDescripcionProyecto());
+        proyectoDto.setImagen1Proyecto(proyecto.getImagen1Proyecto());
+        proyectoDto.setImagen2Proyecto(proyecto.getImagen2Proyecto());
+        proyectoDto.setImagen3Proyecto(proyecto.getImagen3Proyecto());
+        proyectoDto.setFechaInicioProyecto(proyecto.getFechaInicioProyecto());
+        proyectoDto.setFechaFinalizacionProyecto(proyecto.getFechaFinalizacionProyecto());
+        proyectoDto.setMetaRecaudacionProyecto(proyecto.getMetaRecaudacionProyecto());
+        proyectoDto.setEstadoProyecto(proyecto.getEstadoProyecto());
+        proyectoDto.setIdCategoria(proyecto.getCategoriaProyecto().getIdCategoria()); // Ahora se usa la id de la categoría
+        return proyectoDto;
     }
 }
-

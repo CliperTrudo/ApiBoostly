@@ -128,8 +128,9 @@ public class UsuarioController {
             MailDto mail = new MailDto();
             mail.setMail(nuevoUsuario.getMailUsuario());
             if (usuarioService.buscarMail(mail) == null) {
-                nuevoUsuario = usuarioService.createUsuario(nuevoUsuario);
-                return ResponseEntity.ok(nuevoUsuario);
+            	UsuariosDto usuarioNuevoDto =  convertirAUsuarioDto(usuarioService.createUsuario(nuevoUsuario));
+                
+                return ResponseEntity.ok(usuarioNuevoDto);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
