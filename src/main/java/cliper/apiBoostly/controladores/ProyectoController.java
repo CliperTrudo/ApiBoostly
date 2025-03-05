@@ -63,6 +63,16 @@ public class ProyectoController {
         }
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<Proyectos> obtenerProyectoPorId(@PathVariable Long id) {
+        Proyectos proyecto = proyectoService.obtenerProyectoPorId(id);
+        if (proyecto != null) {
+            return ResponseEntity.ok(proyecto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     @GetMapping
     public ResponseEntity<List<ProyectoDto>> obtenerProyectos() {
         List<Proyectos> proyectos = proyectoService.listarProyectos();
