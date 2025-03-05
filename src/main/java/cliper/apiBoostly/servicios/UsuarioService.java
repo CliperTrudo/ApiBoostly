@@ -42,6 +42,10 @@ public class UsuarioService {
         Optional<Usuarios> usuario = usuarioRepository.findByGoogleUsuarioTrueAndMailUsuario(mail);
         return usuario.orElse(null);
     }
+    
+    public Usuarios obtenerUsuarioPorId(Long id) {
+        return usuarioRepository.findById(id).orElse(null);
+    }
 
     
     public Usuarios createUsuario(Usuarios usuario) {

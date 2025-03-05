@@ -12,4 +12,6 @@ public interface ProyectoRepository extends JpaRepository<Proyectos, Long> {
     // Aquí puedes agregar consultas personalizadas si es necesario
 	@Query("SELECT p FROM Proyectos p WHERE p.categoriaProyecto.idCategoria = :idCategoria")
     List<Proyectos> findByIdCategoria(@Param("idCategoria") Long idCategoria);
+	
+	List<Proyectos> findByUsuarioId(Long idUsuario);
 }

@@ -52,6 +52,17 @@ public class ProyectoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(proyectoDtoResponse);
     }
     
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<ProyectoDto>> obtenerProyectosPorUsuario(@PathVariable Long idUsuario) {
+        List<Proyectos> proyectos = proyectoService.obtenerProyectosPorUsuario(idUsuario);
+        List<ProyectoDto> proyectosDto = proyectos.stream().map(this::convertirAProyectoDto).collect(Collectors.toList());
+        if (!proyectos.isEmpty()) {
+            return ResponseEntity.ok(proyectosDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     @GetMapping
     public ResponseEntity<List<ProyectoDto>> obtenerProyectos() {
         List<Proyectos> proyectos = proyectoService.listarProyectos();

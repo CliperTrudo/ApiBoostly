@@ -86,6 +86,10 @@ public class ProyectoService {
         return proyectoRepository.save(proyectoExistente);
     }
     
+    public List<Proyectos> obtenerProyectosPorUsuario(Long idUsuario) {
+        return proyectoRepository.findByUsuarioId(idUsuario);
+    }
+    
     public List<Proyectos> obtenerProyectosPorCategoria(Long idCategoria) {
         return proyectoRepository.findByIdCategoria(idCategoria);
                 

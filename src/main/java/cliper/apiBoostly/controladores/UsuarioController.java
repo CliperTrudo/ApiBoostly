@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,17 @@ public class UsuarioController {
     @GetMapping
     public List<Usuarios> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuariosDto> obtenerUsuarioPorId(@PathVariable Long id) {
+        Usuarios usuario = usuarioService.obtenerUsuarioPorId(id);
+        UsuariosDto usuarioEncontrado = convertirAUsuarioDto(usuario);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuarioEncontrado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // Método para hacer login con el mail
