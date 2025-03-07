@@ -84,4 +84,8 @@ ApiBoostly/
 │   │   ├── java/cliper/apiBoostly/      # Pruebas unitarias
 └── pom.xml  # Dependencias de Maven
 ```
+### Diagrama Entidad-Relación
 
+A continuación se muestra el diagrama entidad-relación de la base de datos Boostly:
+
+![Diagrama ER](docs/img/Untitled.png)
