@@ -20,7 +20,7 @@ ApiBoostly es una API desarrollada con Spring Boot para la gestión de usuarios,
 ### Pasos para ejecutar el proyecto
 1. Clonar el repositorio:
    ```sh
-   git clone https://github.com/usuario/ApiBoostly.git
+   git clone https://github.com/Clipertrucado/ApiBoostly.git
    cd ApiBoostly
    ```
 2. Configurar el archivo `application.properties` en `src/main/resources/` con los datos de conexión a la base de datos.
