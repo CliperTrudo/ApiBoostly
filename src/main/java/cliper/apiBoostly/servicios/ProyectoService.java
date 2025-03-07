@@ -23,6 +23,9 @@ public class ProyectoService {
     /**
      * Crea un nuevo proyecto a partir de un ProyectoDto.
      * Se asume que el campo idUsuario del DTO contiene el id del usuario logueado.
+     * 
+     * @param dto El DTO con los datos del nuevo proyecto.
+     * @return El proyecto creado.
      */
     @Transactional
     public Proyectos crearProyecto(ProyectoDto dto) {
@@ -38,10 +41,10 @@ public class ProyectoService {
             dto.getImagen1Proyecto(),
             dto.getImagen2Proyecto(),
             dto.getImagen3Proyecto(),
-            dto.getFechaInicioProyecto(),          // Se espera que el controlador asigne la fecha de inicio (o se asigne aquí)
-            dto.getFechaFinalizacionProyecto(),     // Validar que sea posterior a la fecha de inicio en el controlador o servicio
-            dto.getMetaRecaudacionProyecto(),       // Debe ser un número positivo
-            dto.getEstadoProyecto(),                // true = activo, false = inactivo/finalizado
+            dto.getFechaInicioProyecto(),
+            dto.getFechaFinalizacionProyecto(),
+            dto.getMetaRecaudacionProyecto(),
+            dto.getEstadoProyecto(),
             categoriaService.obtenerCategoriaPorId(dto.getIdCategoria())
         );
         return proyectoRepository.save(proyecto);
@@ -49,6 +52,8 @@ public class ProyectoService {
     
     /**
      * Retorna la lista de todos los proyectos.
+     * 
+     * @return Una lista de proyectos.
      */
     @Transactional(readOnly = true)
     public List<Proyectos> listarProyectos() {
@@ -57,6 +62,9 @@ public class ProyectoService {
     
     /**
      * Retorna un proyecto por su ID.
+     * 
+     * @param id El ID del proyecto a buscar.
+     * @return El proyecto encontrado o null si no existe.
      */
     @Transactional(readOnly = true)
     public Proyectos obtenerProyectoPorId(Long id) {
@@ -67,6 +75,10 @@ public class ProyectoService {
     /**
      * Actualiza un proyecto existente a partir del ID y los nuevos datos contenidos en el DTO.
      * Se asume que algunos campos, como la fecha de inicio, no se actualizan.
+     * 
+     * @param id El ID del proyecto a actualizar.
+     * @param dto El DTO con los nuevos datos.
+     * @return El proyecto actualizado o null si no se encontró el proyecto.
      */
     public Proyectos actualizarProyecto(Long id, ProyectoDto dto) {
         Proyectos proyectoExistente = obtenerProyectoPorId(id);
@@ -109,18 +121,31 @@ public class ProyectoService {
         return proyectoRepository.save(proyectoExistente);
     }
     
+    /**
+     * Obtiene los proyectos de un usuario específico.
+     * 
+     * @param idUsuario El ID del usuario cuyos proyectos se desean obtener.
+     * @return Una lista de proyectos del usuario.
+     */
     public List<Proyectos> obtenerProyectosPorUsuario(Long idUsuario) {
         return proyectoRepository.findByUsuarioId(idUsuario);
     }
     
+    /**
+     * Obtiene los proyectos de una categoría específica.
+     * 
+     * @param idCategoria El ID de la categoría cuyos proyectos se desean obtener.
+     * @return Una lista de proyectos de la categoría.
+     */
     public List<Proyectos> obtenerProyectosPorCategoria(Long idCategoria) {
         return proyectoRepository.findByIdCategoria(idCategoria);
-                
     }
 
-    
     /**
      * Elimina un proyecto por su ID.
+     * 
+     * @param id El ID del proyecto a eliminar.
+     * @return true si el proyecto fue eliminado, false si hubo un error.
      */
     @Transactional
     public boolean eliminarProyecto(Long id) {
@@ -132,5 +157,4 @@ public class ProyectoService {
 			return false;
 		}
     }
-    
 }

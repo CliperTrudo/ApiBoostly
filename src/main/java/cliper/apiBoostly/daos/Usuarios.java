@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+/**
+ * Clase que representa un usuario en el sistema.
+ * Esta clase está mapeada a la tabla 'usuarios' en la base de datos.
+ * @author Sergio Alfonseca
+ */
 @Entity
 @Table(name = "usuarios")
 public class Usuarios {
@@ -85,7 +90,25 @@ public class Usuarios {
         this.tokenExpiracion = tokenExpiracion;
     }
 
-    // Getters y Setters
+    /**
+     * Métodos Getters y Setters:
+     * - getId() y setId(): Obtienen y establecen el ID del usuario.
+     * - getNombreUsuario() y setNombreUsuario(): Obtienen y establecen el nombre del usuario.
+     * - getRol() y setRol(): Obtienen y establecen el rol del usuario.
+     * - getApellidosUsuario() y setApellidosUsuario(): Obtienen y establecen los apellidos del usuario.
+     * - getMailUsuario() y setMailUsuario(): Obtienen y establecen el correo electrónico del usuario.
+     * - getFechaNacimientoUsuario() y setFechaNacimientoUsuario(): Obtienen y establecen la fecha de nacimiento del usuario.
+     * - getNicknameUsuario() y setNicknameUsuario(): Obtienen y establecen el apodo del usuario.
+     * - getContrasenyaUsuario() y setContrasenyaUsuario(): Obtienen y establecen la contraseña del usuario.
+     * - getFechaAltaUsuario() y setFechaAltaUsuario(): Obtienen y establecen la fecha de alta del usuario.
+     * - getDescripcionUsuario() y setDescripcionUsuario(): Obtienen y establecen la descripción del usuario.
+     * - getDniUsuario() y setDniUsuario(): Obtienen y establecen el DNI del usuario.
+     * - getTelefonoUsuario() y setTelefonoUsuario(): Obtienen y establecen el número de teléfono del usuario.
+     * - getImgUsuario() y setImgUsuario(): Obtienen y establecen la imagen del usuario.
+     * - getGoogleUsuario() y setGoogleUsuario(): Obtienen y establecen si el usuario tiene cuenta de Google.
+     * - getTokenRecuperacion() y setTokenRecuperacion(): Obtienen y establecen el token de recuperación de contraseña.
+     * - getTokenExpiracion() y setTokenExpiracion(): Obtienen y establecen la fecha de expiración del token de recuperación.
+     */
     public Long getId() {
         return id;
     }
@@ -214,6 +237,10 @@ public class Usuarios {
         this.tokenExpiracion = tokenExpiracion;
     }
 
+    /**
+     * Método toString():
+     * - Devuelve una representación en formato String del usuario, incluyendo su ID, nombre, apellidos, correo, rol, etc.
+     */
     @Override
     public String toString() {
         return "Usuarios{" +

@@ -3,12 +3,18 @@ package cliper.apiBoostly.dtos;
 import java.time.Instant;
 
 public class TokenContraseñaDto {
-	private String email;
+    private String email;
     private String tokenRecuperacion;
     private String nuevaContrasena;
     private Instant fechaExpiracion;
 
-    // Getters y Setters
+    /**
+     * Métodos Getters y Setters:
+     * - getEmail() y setEmail(): Obtienen y establecen el correo electrónico del usuario.
+     * - getTokenRecuperacion() y setTokenRecuperacion(): Obtienen y establecen el token de recuperación.
+     * - getNuevaContrasena() y setNuevaContrasena(): Obtienen y establecen la nueva contraseña.
+     * - getFechaExpiracion() y setFechaExpiracion(): Obtienen y establecen la fecha de expiración del token de recuperación.
+     */
     public String getEmail() {
         return email;
     }
@@ -40,5 +46,4 @@ public class TokenContraseñaDto {
     public void setFechaExpiracion(Instant fechaExpiracion) {
         this.fechaExpiracion = fechaExpiracion;
     }
-
 }

@@ -2,6 +2,11 @@ package cliper.apiBoostly.daos;
 
 import jakarta.persistence.*;
 
+/**
+ * Clase que representa un rol en el sistema.
+ * Esta clase está mapeada a la tabla 'roles' en la base de datos.
+ * @author Sergio Alfonseca
+ */
 @Entity
 @Table(name = "roles")
 public class Roles {
@@ -26,7 +31,12 @@ public class Roles {
         this.descripcionRol = descripcionRol;
     }
 
-    // Getters y setters
+    /**
+     * Métodos Getters y Setters:
+     * - getIdRol() y setIdRol(): Obtienen y establecen el ID del rol.
+     * - getNombreRol() y setNombreRol(): Obtienen y establecen el nombre del rol.
+     * - getDescripcionRol() y setDescripcionRol(): Obtienen y establecen la descripción del rol.
+     */
     public Long getIdRol() {
         return idRol;
     }
@@ -51,6 +61,10 @@ public class Roles {
         this.descripcionRol = descripcionRol;
     }
 
+    /**
+     * Método toString():
+     * - Devuelve una representación en formato String del rol, incluyendo el ID, nombre y descripción del rol.
+     */
     @Override
     public String toString() {
         return "Roles{" +

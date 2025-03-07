@@ -16,7 +16,12 @@ public class CategoriaDto {
         this.descripcionCategoria = descripcionCategoria;
     }
 
-    // Getters y Setters
+    /**
+     * Métodos Getters y Setters:
+     * - getIdCategoria() y setIdCategoria(): Obtienen y establecen el ID de la categoría.
+     * - getNombreCategoria() y setNombreCategoria(): Obtienen y establecen el nombre de la categoría.
+     * - getDescripcionCategoria() y setDescripcionCategoria(): Obtienen y establecen la descripción de la categoría.
+     */
     public Long getIdCategoria() {
         return idCategoria;
     }
@@ -41,6 +46,10 @@ public class CategoriaDto {
         this.descripcionCategoria = descripcionCategoria;
     }
 
+    /**
+     * Método toString():
+     * - Devuelve una representación en formato String de la categoría DTO, incluyendo el ID, nombre y descripción de la categoría.
+     */
     @Override
     public String toString() {
         return "CategoriaDto{" +

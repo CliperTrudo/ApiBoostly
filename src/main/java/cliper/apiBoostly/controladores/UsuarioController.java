@@ -38,12 +38,25 @@ public class UsuarioController {
         this.usuarioToken = usuarioToken;
     }
 
+    /**
+     * Obtiene todos los usuarios registrados.
+     * 
+     * @return Una lista de todos los usuarios.
+     * @author Sergio Alfonseca
+     */
     @CrossOrigin(origins = "http://127.0.0.1:5500")
     @GetMapping
     public List<Usuarios> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
     }
     
+    /**
+     * Obtiene un usuario específico por su ID.
+     * 
+     * @param id El identificador del usuario a obtener.
+     * @return ResponseEntity con el usuario encontrado o un error si no se encuentra.
+     * @author Sergio Alfonseca
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UsuariosDto> obtenerUsuarioPorId(@PathVariable Long id) {
         Usuarios usuario = usuarioService.obtenerUsuarioPorId(id);
@@ -55,7 +68,13 @@ public class UsuarioController {
         }
     }
 
-    // Método para convertir Usuarios a UsuarioDto
+    /**
+     * Método privado para convertir un usuario a UsuarioDto.
+     * 
+     * @param usuario El objeto Usuario a convertir.
+     * @return El objeto UsuarioDto correspondiente.
+     * @author Sergio Alfonseca
+     */
     private UsuariosDto convertirAUsuarioDto(Usuarios usuario) {
         UsuariosDto usuarioDto = new UsuariosDto();
         usuarioDto.setId(usuario.getId());
@@ -83,6 +102,13 @@ public class UsuarioController {
         return usuarioDto;
     }
 
+    /**
+     * Crea un nuevo usuario.
+     * 
+     * @param usuarioDto El objeto que contiene los datos del usuario a crear.
+     * @return ResponseEntity con el usuario creado.
+     * @author Sergio Alfonseca
+     */
     @CrossOrigin(origins = "http://127.0.0.1:5500")
     @PostMapping
     public ResponseEntity<?> createUsuario(@RequestBody UsuariosDto usuarioDto) {
@@ -133,6 +159,13 @@ public class UsuarioController {
         }
     }
     
+    /**
+     * Elimina un usuario específico.
+     * 
+     * @param id El identificador del usuario a eliminar.
+     * @return ResponseEntity con el resultado de la operación de eliminación.
+     * @author Sergio Alfonseca
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarUsuario(@PathVariable Long id) {
         boolean eliminado = usuarioService.eliminarUsuarioPorId(id);
@@ -143,7 +176,13 @@ public class UsuarioController {
         }
     }
 
-    
+    /**
+     * Obtiene un usuario específico por su correo electrónico.
+     * 
+     * @param email El correo electrónico del usuario a obtener.
+     * @return ResponseEntity con el usuario encontrado o un error si no se encuentra.
+     * @author Sergio Alfonseca
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<UsuariosDto> obtenerUsuarioPorEmail(@PathVariable String email) {
         Usuarios usuario = usuarioService.obtenerUsuarioPorEmail(email); // Llamada al servicio
@@ -154,12 +193,26 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * Genera un token para recuperar la contraseña de un usuario.
+     * 
+     * @param request El objeto que contiene la información necesaria para generar el token.
+     * @return ResponseEntity indicando el éxito de la operación.
+     * @author Sergio Alfonseca
+     */
     @PostMapping("/generar-token")
     public ResponseEntity<String> generarToken(@RequestBody TokenContraseñaDto request) {
         usuarioToken.generarToken(request.getEmail(), request.getTokenRecuperacion());
         return ResponseEntity.ok("Token generado y enviado correctamente");
     }
 
+    /**
+     * Resetea la contraseña de un usuario utilizando un token de recuperación.
+     * 
+     * @param request El objeto que contiene el token y la nueva contraseña.
+     * @return ResponseEntity indicando si la contraseña fue actualizada correctamente o si el token es inválido.
+     * @author Sergio Alfonseca
+     */
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody TokenContraseñaDto request) {
         boolean actualizado = usuarioToken.actualizarContrasena(request.getTokenRecuperacion(),

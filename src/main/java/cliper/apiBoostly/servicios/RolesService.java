@@ -19,23 +19,43 @@ public class RolesService {
         this.rolesRepository = rolesRepository;
     }
 
-    // Obtener todos los roles
+    /**
+     * Obtiene todos los roles.
+     * 
+     * @return Una lista de todos los roles existentes.
+     */
     public List<Roles> getAllRoles() {
         return rolesRepository.findAll();
     }
 
-    // Buscar un rol por su id
+    /**
+     * Busca un rol por su ID.
+     * 
+     * @param idRol El ID del rol a buscar.
+     * @return El rol encontrado o null si no existe.
+     */
     public Roles buscarRol(Long idRol) {
         Optional<Roles> rol = rolesRepository.findById(idRol);
         return rol.orElse(null); // Retorna el rol si existe, o null si no se encuentra
     }
 
-    // Crear un nuevo rol
+    /**
+     * Crea un nuevo rol.
+     * 
+     * @param rol El rol a crear.
+     * @return El rol creado.
+     */
     public Roles createRol(Roles rol) {
         return rolesRepository.save(rol);
     }
 
-    // Actualizar un rol existente
+    /**
+     * Actualiza un rol existente.
+     * 
+     * @param idRol El ID del rol a actualizar.
+     * @param rolDetails Los nuevos detalles del rol.
+     * @return El rol actualizado.
+     */
     public Roles updateRol(Long idRol, Roles rolDetails) {
         Roles rol = rolesRepository.findById(idRol).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
         rol.setNombreRol(rolDetails.getNombreRol());
@@ -43,7 +63,11 @@ public class RolesService {
         return rolesRepository.save(rol);
     }
 
-    // Eliminar un rol por su id
+    /**
+     * Elimina un rol por su ID.
+     * 
+     * @param idRol El ID del rol a eliminar.
+     */
     public void deleteRol(Long idRol) {
         Roles rol = rolesRepository.findById(idRol).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
         rolesRepository.delete(rol);

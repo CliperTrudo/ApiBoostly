@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Clase que representa un proyecto en el sistema.
+ * Esta clase está mapeada a la tabla 'Proyectos' en la base de datos.
+ * @author Sergio Alfonseca
+ */
 @Entity
 @Table(name = "Proyectos")
 public class Proyectos {
@@ -79,8 +84,20 @@ public class Proyectos {
         this.categoriaProyecto = categoriaProyecto; // Referencia a la entidad Categoria
     }
 
-    // Getters y Setters
-
+    /**
+     * Métodos Getters y Setters:
+     * - getIdProyecto() y setIdProyecto(): Obtienen y establecen el ID del proyecto.
+     * - getUsuario() y setUsuario(): Obtienen y establecen el usuario creador del proyecto.
+     * - getNombreProyecto() y setNombreProyecto(): Obtienen y establecen el nombre del proyecto.
+     * - getDescripcionProyecto() y setDescripcionProyecto(): Obtienen y establecen la descripción del proyecto.
+     * - getImagen1Proyecto(), getImagen2Proyecto(), getImagen3Proyecto() y sus respectivos setters: 
+     *   Obtienen y establecen las imágenes del proyecto.
+     * - getFechaInicioProyecto() y setFechaInicioProyecto(): Obtienen y establecen la fecha de inicio del proyecto.
+     * - getFechaFinalizacionProyecto() y setFechaFinalizacionProyecto(): Obtienen y establecen la fecha de finalización del proyecto.
+     * - getMetaRecaudacionProyecto() y setMetaRecaudacionProyecto(): Obtienen y establecen la meta de recaudación del proyecto.
+     * - getEstadoProyecto() y setEstadoProyecto(): Obtienen y establecen el estado del proyecto (activo o inactivo).
+     * - getCategoriaProyecto() y setCategoriaProyecto(): Obtienen y establecen la categoría asociada al proyecto.
+     */
     public Long getIdProyecto() {
         return idProyecto;
     }
@@ -177,10 +194,14 @@ public class Proyectos {
         this.categoriaProyecto = categoriaProyecto;
     }
 
+    /**
+     * Método toString():
+     * - Devuelve una representación en formato String del proyecto, incluyendo el ID del usuario y el nombre de la categoría.
+     */
     @Override
     public String toString() {
         return "Proyecto{" + "idProyecto=" + idProyecto + ", usuario=" + (usuario != null ? usuario.getId() : null)
-                + ", nombreProyecto='" + nombreProyecto + '\'' + ", descripcionProyecto='" + descripcionProyecto + '\''
+                + ", nombreProyecto='" + nombreProyecto + '\'' + ", descripcionProyecto='" + descripcionProyecto + '\'' 
                 + ", fechaInicioProyecto=" + fechaInicioProyecto + ", fechaFinalizacionProyecto=" + fechaFinalizacionProyecto
                 + ", metaRecaudacionProyecto=" + metaRecaudacionProyecto + ", estadoProyecto=" + estadoProyecto
                 + ", categoriaProyecto=" + (categoriaProyecto != null ? categoriaProyecto.getNombreCategoria() : null) + '}';
