@@ -17,5 +17,8 @@ public interface UsuarioRepository extends JpaRepository<Usuarios, Long> {
 	Optional<Usuarios> findByGoogleUsuarioTrueAndMailUsuario(String mailUsuario);
 
 	Optional<Usuarios> findByTokenRecuperacion(String token);
+	
+	
+
 
 }

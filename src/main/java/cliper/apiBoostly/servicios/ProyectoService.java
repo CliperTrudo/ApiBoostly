@@ -1,5 +1,6 @@
 package cliper.apiBoostly.servicios;
 
+import cliper.apiBoostly.daos.Categoria;
 import cliper.apiBoostly.daos.Proyectos;
 import cliper.apiBoostly.daos.Usuarios;
 import cliper.apiBoostly.dtos.ProyectoDto;
@@ -67,22 +68,44 @@ public class ProyectoService {
      * Actualiza un proyecto existente a partir del ID y los nuevos datos contenidos en el DTO.
      * Se asume que algunos campos, como la fecha de inicio, no se actualizan.
      */
-    @Transactional
     public Proyectos actualizarProyecto(Long id, ProyectoDto dto) {
         Proyectos proyectoExistente = obtenerProyectoPorId(id);
         if (proyectoExistente == null) {
             return null;
         }
-        // Actualización de campos que pueden modificarse:
-        proyectoExistente.setNombreProyecto(dto.getNombreProyecto());
-        proyectoExistente.setDescripcionProyecto(dto.getDescripcionProyecto());
-        proyectoExistente.setImagen1Proyecto(dto.getImagen1Proyecto());
-        proyectoExistente.setImagen2Proyecto(dto.getImagen2Proyecto());
-        proyectoExistente.setImagen3Proyecto(dto.getImagen3Proyecto());
-        proyectoExistente.setFechaFinalizacionProyecto(dto.getFechaFinalizacionProyecto());
-        proyectoExistente.setMetaRecaudacionProyecto(dto.getMetaRecaudacionProyecto());
-        proyectoExistente.setEstadoProyecto(dto.getEstadoProyecto());
-        proyectoExistente.setCategoriaProyecto(categoriaService.obtenerCategoriaPorId(dto.getIdCategoria()));
+
+        // Actualizar solo si los valores no son nulos
+        if (dto.getNombreProyecto() != null) {
+            proyectoExistente.setNombreProyecto(dto.getNombreProyecto());
+        }
+        if (dto.getDescripcionProyecto() != null) {
+            proyectoExistente.setDescripcionProyecto(dto.getDescripcionProyecto());
+        }
+        if (dto.getImagen1Proyecto() != null) {
+            proyectoExistente.setImagen1Proyecto(dto.getImagen1Proyecto());
+        }
+        if (dto.getImagen2Proyecto() != null) {
+            proyectoExistente.setImagen2Proyecto(dto.getImagen2Proyecto());
+        }
+        if (dto.getImagen3Proyecto() != null) {
+            proyectoExistente.setImagen3Proyecto(dto.getImagen3Proyecto());
+        }
+        if (dto.getFechaFinalizacionProyecto() != null) {
+            proyectoExistente.setFechaFinalizacionProyecto(dto.getFechaFinalizacionProyecto());
+        }
+        if (dto.getMetaRecaudacionProyecto() != null) {
+            proyectoExistente.setMetaRecaudacionProyecto(dto.getMetaRecaudacionProyecto());
+        }
+        if (dto.getEstadoProyecto() != null) {
+            proyectoExistente.setEstadoProyecto(dto.getEstadoProyecto());
+        }
+        if (dto.getIdCategoria() != null) {
+            Categoria categoria = categoriaService.obtenerCategoriaPorId(dto.getIdCategoria());
+            if (categoria != null) {
+                proyectoExistente.setCategoriaProyecto(categoria);
+            }
+        }
+
         return proyectoRepository.save(proyectoExistente);
     }
     
@@ -100,7 +123,14 @@ public class ProyectoService {
      * Elimina un proyecto por su ID.
      */
     @Transactional
-    public void eliminarProyecto(Long id) {
-        proyectoRepository.deleteById(id);
+    public boolean eliminarProyecto(Long id) {
+    	try {
+			proyectoRepository.deleteById(id);
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return false;
+		}
     }
+    
 }

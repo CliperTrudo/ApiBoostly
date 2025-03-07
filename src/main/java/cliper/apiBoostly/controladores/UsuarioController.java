@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cliper.apiBoostly.daos.MailDto;
 import cliper.apiBoostly.daos.Roles;
 import cliper.apiBoostly.daos.Usuarios;
 import cliper.apiBoostly.dtos.TokenContraseñaDto;
@@ -52,22 +52,6 @@ public class UsuarioController {
             return ResponseEntity.ok(usuarioEncontrado);
         } else {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    // Método para hacer login con el mail
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUsuario(@RequestBody MailDto loginRequest) {
-        // Busca el usuario por mail
-        Usuarios usuario = usuarioService.loginUsuario(loginRequest.getMail());
-
-        if (usuario != null) {
-            // Convertir el objeto Usuarios a UsuarioDto
-            UsuariosDto usuarioDto = convertirAUsuarioDto(usuario);
-            return ResponseEntity.ok(usuarioDto); // Devuelve el UsuarioDto
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
         }
     }
 
@@ -137,9 +121,7 @@ public class UsuarioController {
             nuevoUsuario.setRol(rol); // Asignar el rol al usuario
 
             // Verificar si el correo ya existe
-            MailDto mail = new MailDto();
-            mail.setMail(nuevoUsuario.getMailUsuario());
-            if (usuarioService.buscarMail(mail) == null) {
+            if (usuarioService.buscarMail(nuevoUsuario.getMailUsuario()) == null) {
             	UsuariosDto usuarioNuevoDto =  convertirAUsuarioDto(usuarioService.createUsuario(nuevoUsuario));
                 
                 return ResponseEntity.ok(usuarioNuevoDto);
@@ -148,6 +130,27 @@ public class UsuarioController {
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Rol no encontrado");
+        }
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarUsuario(@PathVariable Long id) {
+        boolean eliminado = usuarioService.eliminarUsuarioPorId(id);
+        if (eliminado) {
+            return ResponseEntity.ok("Usuario eliminado correctamente.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+        }
+    }
+
+    
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuariosDto> obtenerUsuarioPorEmail(@PathVariable String email) {
+        Usuarios usuario = usuarioService.obtenerUsuarioPorEmail(email); // Llamada al servicio
+        if (usuario != null) {
+            return ResponseEntity.ok(convertirAUsuarioDto(usuario));
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

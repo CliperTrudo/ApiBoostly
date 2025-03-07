@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cliper.apiBoostly.daos.MailDto;
 import cliper.apiBoostly.daos.Usuarios;
 import cliper.apiBoostly.repository.UsuarioRepository;
 
@@ -43,6 +42,28 @@ public class UsuarioService {
         return usuario.orElse(null);
     }
     
+    public Usuarios obtenerUsuarioPorEmail(String email) {
+    	
+    	Optional<Usuarios> usuario = usuarioRepository.findByMailUsuario(email);
+    	
+    	if (usuario.isPresent()) {
+        	System.out.print("si se encontro");
+            return usuario.get();
+        }
+        System.out.print("pues no");
+        return null;
+    }
+    
+    public boolean eliminarUsuarioPorId(Long id) {
+        if (usuarioRepository.existsById(id)) {
+            usuarioRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+
+    
     public Usuarios obtenerUsuarioPorId(Long id) {
         return usuarioRepository.findById(id).orElse(null);
     }
@@ -70,8 +91,8 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
     
-    public Usuarios buscarMail(MailDto mail) {
-        Optional<Usuarios> usuario = usuarioRepository.findByMailUsuario(mail.getMail());
+    public Usuarios buscarMail(String mail) {
+        Optional<Usuarios> usuario = usuarioRepository.findByMailUsuario(mail);
         
         if (usuario.isPresent()) {
         	System.out.print("si se encontro");
@@ -83,18 +104,6 @@ public class UsuarioService {
         return null;
     }
     
-    public Usuarios buscarMailGoogle(MailDto mail) {
-        Optional<Usuarios> usuario = usuarioRepository.findByGoogleUsuarioTrueAndMailUsuario(mail.getMail());
-        
-        if (usuario.isPresent()) {
-        	System.out.print("si se encontro");
-              // Elimina el club encontrado
-    
-            return usuario.get();
-        }
-        System.out.print("pues no");
-        return null;
-    }
 
     @Transactional
     public Usuarios deleteUsuario(String mail, String contrasenya) {
