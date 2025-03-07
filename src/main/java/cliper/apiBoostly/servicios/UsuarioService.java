@@ -9,16 +9,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cliper.apiBoostly.daos.Usuarios;
+import cliper.apiBoostly.dtos.UsuariosDto;
+import cliper.apiBoostly.repository.RolesRepository;
 import cliper.apiBoostly.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
 
+	private final RolesRepository rolesRepository;
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, RolesRepository rolesRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.rolesRepository = rolesRepository;
     }
     
     /**
@@ -61,6 +65,13 @@ public class UsuarioService {
     public Usuarios loginUsuarioGoogle(String mail) {
         Optional<Usuarios> usuario = usuarioRepository.findByGoogleUsuarioTrueAndMailUsuario(mail);
         return usuario.orElse(null);
+    }
+    
+    public Optional<Usuarios> actualizarRolUsuario(Long id, Long rolActualizar) {
+        return usuarioRepository.findById(id).map(usuario -> {
+            rolesRepository.findById(rolActualizar).ifPresent(usuario::setRol);
+            return usuarioRepository.save(usuario);
+        });
     }
     
     /**
@@ -108,29 +119,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    /**
-     * Actualiza los datos de un usuario existente.
-     * 
-     * @param id El ID del usuario a actualizar.
-     * @param usuarioDetails Los nuevos detalles del usuario.
-     * @return El usuario actualizado.
-     */
-    public Usuarios updateUsuario(Long id, Usuarios usuarioDetails) {
-        Usuarios usuario = usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        usuario.setNombreUsuario(usuarioDetails.getNombreUsuario());
-        usuario.setApellidosUsuario(usuarioDetails.getApellidosUsuario());
-        usuario.setMailUsuario(usuarioDetails.getMailUsuario());
-        usuario.setFechaNacimientoUsuario(usuarioDetails.getFechaNacimientoUsuario());
-        usuario.setNicknameUsuario(usuarioDetails.getNicknameUsuario());
-        usuario.setContrasenyaUsuario(usuarioDetails.getContrasenyaUsuario());
-        usuario.setFechaAltaUsuario(usuarioDetails.getFechaAltaUsuario());
-        usuario.setDescripcionUsuario(usuarioDetails.getDescripcionUsuario());
-        usuario.setDniUsuario(usuarioDetails.getDniUsuario());
-        usuario.setTelefonoUsuario(usuarioDetails.getTelefonoUsuario());
-        usuario.setImgUsuario(usuarioDetails.getImgUsuario());
-        usuario.setRol(usuarioDetails.getRol());
-        return usuarioRepository.save(usuario);
-    }
+    
     
     /**
      * Busca un usuario por su correo electrónico.
