@@ -25,6 +25,7 @@ import cliper.apiBoostly.servicios.RolesService;
 import cliper.apiBoostly.servicios.UsuarioService;
 import cliper.apiBoostly.servicios.UsuarioToken;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -46,7 +47,7 @@ public class UsuarioController {
      * @return Una lista de todos los usuarios.
      * @author Sergio Alfonseca
      */
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
+    
     @GetMapping
     public List<Usuarios> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
@@ -109,6 +110,18 @@ public class UsuarioController {
         Optional<Usuarios> usuario = usuarioService.actualizarRolUsuario(id, usuarioActualizado.getRol());
         return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+    
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<UsuariosDto> actualizarUsuario(@PathVariable Long id, @RequestBody UsuariosDto usuarioActualizado) {
+        Usuarios usuario = usuarioService.actualizarUsuario(id, usuarioActualizado);
+        
+        if (usuario != null) {
+            return ResponseEntity.ok(convertirAUsuarioDto(usuario));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 
 
     /**
@@ -118,7 +131,7 @@ public class UsuarioController {
      * @return ResponseEntity con el usuario creado.
      * @author Sergio Alfonseca
      */
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
+    
     @PostMapping
     public ResponseEntity<?> createUsuario(@RequestBody UsuariosDto usuarioDto) {
         // Buscar el rol por idRol

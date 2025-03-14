@@ -33,6 +33,65 @@ public class UsuarioService {
     public List<Usuarios> getAllUsuarios() {
         return usuarioRepository.findAll();
     }
+    
+    @Transactional
+    public Usuarios actualizarUsuario(Long id, UsuariosDto usuarioActualizado) {
+        Optional<Usuarios> usuarioOptional = usuarioRepository.findById(id);
+
+        if (usuarioOptional.isPresent()) {
+            Usuarios usuario = usuarioOptional.get();
+
+            // Solo actualizar los campos si el nuevo valor no es nulo ni vacío
+            if (usuarioActualizado.getNombreUsuario() != null && !usuarioActualizado.getNombreUsuario().isEmpty()) {
+                usuario.setNombreUsuario(usuarioActualizado.getNombreUsuario());
+            }
+            if (usuarioActualizado.getApellidosUsuario() != null && !usuarioActualizado.getApellidosUsuario().isEmpty()) {
+                usuario.setApellidosUsuario(usuarioActualizado.getApellidosUsuario());
+            }
+            if (usuarioActualizado.getMailUsuario() != null && !usuarioActualizado.getMailUsuario().isEmpty()) {
+                usuario.setMailUsuario(usuarioActualizado.getMailUsuario());
+            }
+            if (usuarioActualizado.getFechaNacimientoUsuario() != null) {
+                usuario.setFechaNacimientoUsuario(usuarioActualizado.getFechaNacimientoUsuario());
+            }
+            if (usuarioActualizado.getNicknameUsuario() != null && !usuarioActualizado.getNicknameUsuario().isEmpty()) {
+                usuario.setNicknameUsuario(usuarioActualizado.getNicknameUsuario());
+            }
+            if (usuarioActualizado.getContrasenyaUsuario() != null && !usuarioActualizado.getContrasenyaUsuario().isEmpty()) {
+                usuario.setContrasenyaUsuario(usuarioActualizado.getContrasenyaUsuario());
+            }
+            if (usuarioActualizado.getFechaAltaUsuario() != null) {
+                usuario.setFechaAltaUsuario(usuarioActualizado.getFechaAltaUsuario());
+            }
+            if (usuarioActualizado.getDescripcionUsuario() != null && !usuarioActualizado.getDescripcionUsuario().isEmpty()) {
+                usuario.setDescripcionUsuario(usuarioActualizado.getDescripcionUsuario());
+            }
+            if (usuarioActualizado.getDniUsuario() != null && !usuarioActualizado.getDniUsuario().isEmpty()) {
+                usuario.setDniUsuario(usuarioActualizado.getDniUsuario());
+            }
+            if (usuarioActualizado.getTelefonoUsuario() != null && !usuarioActualizado.getTelefonoUsuario().isEmpty()) {
+                usuario.setTelefonoUsuario(usuarioActualizado.getTelefonoUsuario());
+            }
+            if (usuarioActualizado.getImgUsuario() != null) {
+                usuario.setImgUsuario(usuarioActualizado.getImgUsuario());
+            }
+            if (usuarioActualizado.getGoogleUsuario() != null) {
+                usuario.setGoogleUsuario(usuarioActualizado.getGoogleUsuario());
+            }
+            if (usuarioActualizado.getTokenExpiracion() != null) {
+                usuario.setTokenExpiracion(new Timestamp(usuarioActualizado.getTokenExpiracion().getTime()));
+            }
+            if (usuarioActualizado.getRol() != null) {
+                rolesRepository.findById(usuarioActualizado.getRol()).ifPresent(usuario::setRol);
+            }
+
+            return usuarioRepository.save(usuario);
+        } else {
+            return null; // Retornar null si el usuario no se encuentra
+        }
+    }
+
+
 
     /**
      * Realiza login de un usuario por su correo electrónico, asegurándose de que no tenga cuenta de Google.

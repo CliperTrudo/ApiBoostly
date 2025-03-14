@@ -53,7 +53,7 @@ public class Usuarios {
     private String telefonoUsuario;
 
     @Lob
-    @Column(name = "img_usuario")
+    @Column(name = "img_usuario", columnDefinition = "LONGBLOB")
     private byte[] imgUsuario;
 
     @Column(name = "google_usuario")
