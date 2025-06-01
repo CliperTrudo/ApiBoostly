@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 /**
  * Clase que representa un proyecto en el sistema.
  * Esta clase está mapeada a la tabla 'Proyectos' en la base de datos.
- * @author Sergio Alfonseca
  */
 @Entity
 @Table(name = "Proyectos")
@@ -54,23 +53,34 @@ public class Proyectos {
     @Column(name = "meta_recaudacion_proyecto", nullable = false)
     private Double metaRecaudacionProyecto;
 
-    // Estado del proyecto: true = activo, false = inactivo/finalizado
-    @Column(name = "estado_proyecto", nullable = false)
-    private Boolean estadoProyecto;
+    /**
+     * Ahora reemplazamos el Boolean estadoProyecto
+     * por una relación ManyToOne a EstadoProyecto.
+     */
+    @ManyToOne
+    @JoinColumn(name = "estado_id", nullable = false)
+    private EstadoProyecto idEstado;
 
     // Relación con la tabla `categorias`
     @ManyToOne
     @JoinColumn(name = "id_categoria", nullable = false)
-    private Categoria categoriaProyecto; // Ahora es una referencia a la entidad Categoria
+    private Categoria categoriaProyecto; // Ahora es referencia a entidad Categoria
 
-    // Constructor vacío requerido por JPA
-    public Proyectos() {}
+    public Proyectos() { }
 
-    // Constructor completo (sin id, que se genera automáticamente)
-    public Proyectos(Usuarios usuario, String nombreProyecto, String descripcionProyecto,
-                    byte[] imagen1Proyecto, byte[] imagen2Proyecto, byte[] imagen3Proyecto,
-                    LocalDateTime fechaInicioProyecto, LocalDate fechaFinalizacionProyecto,
-                    Double metaRecaudacionProyecto, Boolean estadoProyecto, Categoria categoriaProyecto) {
+    public Proyectos(
+        Usuarios usuario,
+        String nombreProyecto,
+        String descripcionProyecto,
+        byte[] imagen1Proyecto,
+        byte[] imagen2Proyecto,
+        byte[] imagen3Proyecto,
+        LocalDateTime fechaInicioProyecto,
+        LocalDate fechaFinalizacionProyecto,
+        Double metaRecaudacionProyecto,
+        EstadoProyecto estadoProyecto,
+        Categoria categoriaProyecto
+    ) {
         this.usuario = usuario;
         this.nombreProyecto = nombreProyecto;
         this.descripcionProyecto = descripcionProyecto;
@@ -80,24 +90,12 @@ public class Proyectos {
         this.fechaInicioProyecto = fechaInicioProyecto;
         this.fechaFinalizacionProyecto = fechaFinalizacionProyecto;
         this.metaRecaudacionProyecto = metaRecaudacionProyecto;
-        this.estadoProyecto = estadoProyecto;
-        this.categoriaProyecto = categoriaProyecto; // Referencia a la entidad Categoria
+        this.idEstado = estadoProyecto;
+        this.categoriaProyecto = categoriaProyecto;
     }
 
-    /**
-     * Métodos Getters y Setters:
-     * - getIdProyecto() y setIdProyecto(): Obtienen y establecen el ID del proyecto.
-     * - getUsuario() y setUsuario(): Obtienen y establecen el usuario creador del proyecto.
-     * - getNombreProyecto() y setNombreProyecto(): Obtienen y establecen el nombre del proyecto.
-     * - getDescripcionProyecto() y setDescripcionProyecto(): Obtienen y establecen la descripción del proyecto.
-     * - getImagen1Proyecto(), getImagen2Proyecto(), getImagen3Proyecto() y sus respectivos setters: 
-     *   Obtienen y establecen las imágenes del proyecto.
-     * - getFechaInicioProyecto() y setFechaInicioProyecto(): Obtienen y establecen la fecha de inicio del proyecto.
-     * - getFechaFinalizacionProyecto() y setFechaFinalizacionProyecto(): Obtienen y establecen la fecha de finalización del proyecto.
-     * - getMetaRecaudacionProyecto() y setMetaRecaudacionProyecto(): Obtienen y establecen la meta de recaudación del proyecto.
-     * - getEstadoProyecto() y setEstadoProyecto(): Obtienen y establecen el estado del proyecto (activo o inactivo).
-     * - getCategoriaProyecto() y setCategoriaProyecto(): Obtienen y establecen la categoría asociada al proyecto.
-     */
+    // Getters y setters de todos los campos:
+
     public Long getIdProyecto() {
         return idProyecto;
     }
@@ -178,12 +176,12 @@ public class Proyectos {
         this.metaRecaudacionProyecto = metaRecaudacionProyecto;
     }
 
-    public Boolean getEstadoProyecto() {
-        return estadoProyecto;
+    public EstadoProyecto getEstadoProyecto() {
+        return idEstado;
     }
 
-    public void setEstadoProyecto(Boolean estadoProyecto) {
-        this.estadoProyecto = estadoProyecto;
+    public void setEstadoProyecto(EstadoProyecto estadoProyecto) {
+        this.idEstado = estadoProyecto;
     }
 
     public Categoria getCategoriaProyecto() {
@@ -194,16 +192,18 @@ public class Proyectos {
         this.categoriaProyecto = categoriaProyecto;
     }
 
-    /**
-     * Método toString():
-     * - Devuelve una representación en formato String del proyecto, incluyendo el ID del usuario y el nombre de la categoría.
-     */
     @Override
     public String toString() {
-        return "Proyecto{" + "idProyecto=" + idProyecto + ", usuario=" + (usuario != null ? usuario.getId() : null)
-                + ", nombreProyecto='" + nombreProyecto + '\'' + ", descripcionProyecto='" + descripcionProyecto + '\'' 
-                + ", fechaInicioProyecto=" + fechaInicioProyecto + ", fechaFinalizacionProyecto=" + fechaFinalizacionProyecto
-                + ", metaRecaudacionProyecto=" + metaRecaudacionProyecto + ", estadoProyecto=" + estadoProyecto
-                + ", categoriaProyecto=" + (categoriaProyecto != null ? categoriaProyecto.getNombreCategoria() : null) + '}';
+        return "Proyectos{" +
+               "idProyecto=" + idProyecto +
+               ", usuario=" + (usuario != null ? usuario.getId() : null) +
+               ", nombreProyecto='" + nombreProyecto + '\'' +
+               ", descripcionProyecto='" + descripcionProyecto + '\'' +
+               ", fechaInicioProyecto=" + fechaInicioProyecto +
+               ", fechaFinalizacionProyecto=" + fechaFinalizacionProyecto +
+               ", metaRecaudacionProyecto=" + metaRecaudacionProyecto +
+               ", estadoProyecto=" + (idEstado != null ? idEstado.getNombreEstado() : null) +
+               ", categoriaProyecto=" + (categoriaProyecto != null ? categoriaProyecto.getNombreCategoria() : null) +
+               '}';
     }
 }

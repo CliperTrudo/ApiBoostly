@@ -176,7 +176,7 @@ public class ProyectoController {
         proyectoDto.setFechaInicioProyecto(proyecto.getFechaInicioProyecto());
         proyectoDto.setFechaFinalizacionProyecto(proyecto.getFechaFinalizacionProyecto());
         proyectoDto.setMetaRecaudacionProyecto(proyecto.getMetaRecaudacionProyecto());
-        proyectoDto.setEstadoProyecto(proyecto.getEstadoProyecto());
+        proyectoDto.setIdEstado(proyecto.getEstadoProyecto().getId());
         proyectoDto.setIdCategoria(proyecto.getCategoriaProyecto().getIdCategoria()); // Ahora se usa la id de la categoría
         return proyectoDto;
     }

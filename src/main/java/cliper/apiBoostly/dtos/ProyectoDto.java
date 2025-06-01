@@ -16,7 +16,7 @@ public class ProyectoDto {
     private LocalDateTime fechaInicioProyecto;
     private LocalDate fechaFinalizacionProyecto;
     private Double metaRecaudacionProyecto;
-    private Boolean estadoProyecto;
+    private Long idEstado;
     private Long idCategoria;  // ID de la categoría, no la entidad completa
 
     // Constructor vacío
@@ -26,7 +26,7 @@ public class ProyectoDto {
     public ProyectoDto(Long idProyecto, Long idUsuario, String nombreProyecto, String descripcionProyecto,
                        byte[] imagen1Proyecto, byte[] imagen2Proyecto, byte[] imagen3Proyecto,
                        LocalDateTime fechaInicioProyecto, LocalDate fechaFinalizacionProyecto,
-                       Double metaRecaudacionProyecto, Boolean estadoProyecto, Long idCategoria) {
+                       Double metaRecaudacionProyecto, Long estadoProyecto, Long idCategoria) {
         this.idProyecto = idProyecto;
         this.idUsuario = idUsuario;
         this.nombreProyecto = nombreProyecto;
@@ -37,7 +37,7 @@ public class ProyectoDto {
         this.fechaInicioProyecto = fechaInicioProyecto;
         this.fechaFinalizacionProyecto = fechaFinalizacionProyecto;
         this.metaRecaudacionProyecto = metaRecaudacionProyecto;
-        this.estadoProyecto = estadoProyecto;
+        this.idEstado = estadoProyecto;
         this.idCategoria = idCategoria; // Ahora es el ID de la categoría
     }
 
@@ -135,12 +135,12 @@ public class ProyectoDto {
         this.metaRecaudacionProyecto = metaRecaudacionProyecto;
     }
 
-    public Boolean getEstadoProyecto() {
-        return estadoProyecto;
+    public Long getIdEstado() {
+        return idEstado;
     }
 
-    public void setEstadoProyecto(Boolean estadoProyecto) {
-        this.estadoProyecto = estadoProyecto;
+    public void setIdEstado(Long estadoProyecto) {
+        this.idEstado = estadoProyecto;
     }
 
     public Long getIdCategoria() {
@@ -161,7 +161,7 @@ public class ProyectoDto {
                ", descripcionProyecto=" + descripcionProyecto + ", imagen1Proyecto=" + Arrays.toString(imagen1Proyecto) + 
                ", imagen2Proyecto=" + Arrays.toString(imagen2Proyecto) + ", imagen3Proyecto=" + Arrays.toString(imagen3Proyecto) + 
                ", fechaInicioProyecto=" + fechaInicioProyecto + ", fechaFinalizacionProyecto=" + fechaFinalizacionProyecto + 
-               ", metaRecaudacionProyecto=" + metaRecaudacionProyecto + ", estadoProyecto=" + estadoProyecto + 
+               ", metaRecaudacionProyecto=" + metaRecaudacionProyecto + ", estadoProyecto=" + idEstado + 
                ", idCategoria=" + idCategoria + "]";
     }
 }

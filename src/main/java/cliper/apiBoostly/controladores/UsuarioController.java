@@ -112,12 +112,18 @@ public class UsuarioController {
     }
     
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<UsuariosDto> actualizarUsuario(@PathVariable Long id, @RequestBody UsuariosDto usuarioActualizado) {
+    public ResponseEntity<UsuariosDto> actualizarUsuario(
+            @PathVariable Long id,
+            @RequestBody UsuariosDto usuarioActualizado
+    ) {
         Usuarios usuario = usuarioService.actualizarUsuario(id, usuarioActualizado);
-        
+
         if (usuario != null) {
-            return ResponseEntity.ok(convertirAUsuarioDto(usuario));
+            // Convertimos la entidad actualizada de nuevo a DTO para devolverla
+            UsuariosDto dtoResponse = convertirAUsuarioDto(usuario);
+            return ResponseEntity.ok(dtoResponse);
         } else {
+            // Si no existe → HTTP 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
